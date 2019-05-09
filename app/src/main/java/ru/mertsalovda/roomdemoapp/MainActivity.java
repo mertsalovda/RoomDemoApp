@@ -5,6 +5,19 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    // 1. Добавить БД Room
+
+    // 2. Вставить данные/Извлечь данные
+
+    // 3. Добавить ContentProvider над Room
+
+
+
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
