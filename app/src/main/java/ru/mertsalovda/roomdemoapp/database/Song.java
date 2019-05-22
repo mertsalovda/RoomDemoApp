@@ -4,48 +4,48 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity
+@Entity // сущность
 public class Song {
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    private int mId;
+    @PrimaryKey // первичный ключ, идентификатор строки
+    @ColumnInfo(name = "id") // обозначает стобец, задаём имя
+    private int id;
 
     @ColumnInfo(name = "name")
-    private String mName;
+    private String name;
 
     @ColumnInfo(name = "duration")
-    private String mDuration;
+    private String duration;
 
     public Song() {
     }
 
-    public Song(int mId, String mName, String mDuration) {
-        this.mId = mId;
-        this.mName = mName;
-        this.mDuration = mDuration;
+    public Song(int id, String name, String duration) {
+        this.id = id;
+        this.name = name;
+        this.duration = duration;
     }
 
     public int getId() {
-        return mId;
+        return id;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDuration() {
-        return mDuration;
+        return duration;
     }
 
-    public void setDuration(String mDuration) {
-        this.mDuration = mDuration;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

@@ -5,17 +5,20 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.database.Cursor;
 
 import java.util.List;
 
-@Dao
+@Dao // обозначает класс для работы с таблицами
 public interface MusicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAlbums(List<Album> albums);
 
+    // добавить песни в таблицу
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSongs(List<Song> songs);
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void setLinksAlbumSongs(List<AlbumSong> linksAlbumSongs);
@@ -23,6 +26,13 @@ public interface MusicDao {
     @Query("select * from album")
     List<Album> getAlbums();
 
+    @Query("select * from album")
+    Cursor getAlbumsCursor();
+
+    @Query("select * from album where id = :albumId")
+    Cursor getAlbumWithIdCursor(int albumId);
+
+    // получить список всех песен из таблицы
     @Query("select * from song")
     List<Song> getSongs();
 

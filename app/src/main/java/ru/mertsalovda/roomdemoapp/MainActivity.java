@@ -2,6 +2,7 @@ package ru.mertsalovda.roomdemoapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,13 +27,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // получаем экземпляр базы данных
         final MusicDao musicDao = ((AppDelegate) getApplicationContext())
                 .getMusicDatabase()
                 .getMusicDao();
 
         btnAdd = findViewById(R.id.add);
         btnGet = findViewById(R.id.get);
+
+
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showToast(List<Album> albums) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0, size = albums.size(); i < size; i++){
+        for (int i = 0, size = albums.size(); i < size; i++) {
             builder.append(albums.get(i).toString()).append("\n");
         }
 

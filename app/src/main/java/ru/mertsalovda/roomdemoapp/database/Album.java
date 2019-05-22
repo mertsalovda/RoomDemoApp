@@ -10,52 +10,53 @@ public class Album {
 
     @PrimaryKey
     @ColumnInfo(name = "id")
-    private int mId;
+    private int id;
 
     @ColumnInfo(name = "name")
-    private String mName;
+    private String name;
 
     @ColumnInfo(name = "release")
-    private String mReleaseDate;
+    private String releaseDate;
+
 
     public Album() {
     }
 
-    public Album(int mId, String mName, String mReleaseDate) {
-        this.mId = mId;
-        this.mName = mName;
-        this.mReleaseDate = mReleaseDate;
+    public Album(int id, String name, String releaseDate) {
+        this.id = id;
+        this.name = name;
+        this.releaseDate = releaseDate;
     }
 
     public int getId() {
-        return mId;
+        return id;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getReleaseDate() {
-        return mReleaseDate;
+        return releaseDate;
     }
 
-    public void setReleaseDate(String mReleaseDate) {
-        this.mReleaseDate = mReleaseDate;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     @Override
     public String toString() {
         return "Album{" +
-                "Id=" + mId +
-                ", Name='" + mName +
-                ", ReleaseDate='" + mReleaseDate + "}";
+                "Id=" + id +
+                ", Name='" + name +
+                ", ReleaseDate='" + releaseDate + "}";
     }
 }

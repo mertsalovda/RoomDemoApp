@@ -12,44 +12,44 @@ public class AlbumSong {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int mId;
+    private int id;
 
     @ColumnInfo(name = "album_id")
-    private int mAlbumId;
+    private int albumId;
 
     @ColumnInfo(name = "song_id")
-    private int mSongId;
+    private int songId;
 
     public AlbumSong() {
     }
 
-    public AlbumSong(int mId, int mAlbumId, int mSongId) {
-        this.mId = mId;
-        this.mAlbumId = mAlbumId;
-        this.mSongId = mSongId;
+    public AlbumSong(int id, int albumId, int songId) {
+        this.id = id;
+        this.albumId = albumId;
+        this.songId = songId;
     }
 
     public int getId() {
-        return mId;
+        return id;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getAlbumId() {
-        return mAlbumId;
+        return albumId;
     }
 
-    public void setAlbumId(int mAlbumId) {
-        this.mAlbumId = mAlbumId;
+    public void setAlbumId(int albumId) {
+        this.albumId = albumId;
     }
 
     public int getSongId() {
-        return mSongId;
+        return songId;
     }
 
-    public void setSongId(int mSongId) {
-        this.mSongId = mSongId;
+    public void setSongId(int songId) {
+        this.songId = songId;
     }
 }

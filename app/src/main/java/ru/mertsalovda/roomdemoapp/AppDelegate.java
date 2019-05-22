@@ -14,8 +14,9 @@ public class AppDelegate extends Application {
         super.onCreate();
 
         mMusicDatabase = Room.databaseBuilder(this, MusicDatabase.class,
-                "music_database")
-                .allowMainThreadQueries()
+                "music_database")   // название файла
+                .fallbackToDestructiveMigration() // миграция на новую версию
+                .allowMainThreadQueries() // для работы с БД в главном потоке (ТАК ДЕЛАТЬ ПЛОХО)
                 .build();
     }
 
