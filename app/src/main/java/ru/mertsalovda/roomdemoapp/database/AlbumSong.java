@@ -52,4 +52,13 @@ public class AlbumSong {
     public void setSongId(int songId) {
         this.songId = songId;
     }
+
+    @Override
+    public String toString() {
+        return "AlbumSong{" +
+                " id=" + id +
+                ", albumId=" + albumId +
+                ", songId=" + songId +
+                '}';
+    }
 }

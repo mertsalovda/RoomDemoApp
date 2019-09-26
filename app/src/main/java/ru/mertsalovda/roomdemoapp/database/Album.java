@@ -55,8 +55,8 @@ public class Album {
     @Override
     public String toString() {
         return "Album{" +
-                "Id=" + id +
-                ", Name='" + name +
-                ", ReleaseDate='" + releaseDate + "}";
+                " " + id +
+                " | " + name +
+                " | " + releaseDate + "}";
     }
 }

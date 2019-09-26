@@ -48,4 +48,13 @@ public class Song {
     public void setDuration(String duration) {
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                " " + id +
+                " | " + name +
+                " | " + duration +
+                '}';
+    }
 }
