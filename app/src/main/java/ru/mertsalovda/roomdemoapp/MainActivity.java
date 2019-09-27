@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         for (int id = 0; id < songs.size(); id++) {
             if (id % 2 == 0 && id != 0)
                 album_id++;
-            albumSongList.add(new AlbumSong(id, albums.get(album_id).getId(), songs.get(id).getId()));
+            albumSongList.add(new AlbumSong(id+1, albums.get(album_id).getId(), songs.get(id).getId()));
         }
         return albumSongList;
     }

@@ -8,8 +8,13 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.util.List;
+
+import ru.mertsalovda.roomdemoapp.database.Album;
+import ru.mertsalovda.roomdemoapp.database.AlbumSong;
 import ru.mertsalovda.roomdemoapp.database.MusicDao;
 import ru.mertsalovda.roomdemoapp.database.MusicDatabase;
+import ru.mertsalovda.roomdemoapp.database.Song;
 
 public class MusicProvider extends ContentProvider {
 
@@ -23,6 +28,8 @@ public class MusicProvider extends ContentProvider {
 
     private static final int ALBUM_TABLE_CODE = 100;
     private static final int ALBUM_ROW_CODE = 101;
+    private static final int ALBUM_TABLE_CODE_ID = 110;
+    private static final int ALBUM_ROW_CODE_ID = 111;
 
     private static final int SONG_TABLE_CODE = 200;
     private static final int SONG_ROW_CODE = 201;
@@ -91,18 +98,35 @@ public class MusicProvider extends ContentProvider {
                 && code != ALBUMSONG_ROW_CODE && code != ALBUMSONG_TABLE_CODE) return null;
 
         Cursor cursor;
-        switch (code){
-            case ALBUM_TABLE_CODE: cursor = mMusicDao.getAlbumsCursor(); break;
-            case SONG_TABLE_CODE: cursor = mMusicDao.getSongsCursor(); break;
-            case ALBUMSONG_TABLE_CODE: cursor = mMusicDao.getAlbumSongCursor(); break;
-            default: cursor = mMusicDao.getAlbumWithIdCursor((int) ContentUris.parseId(uri)); break;
+        switch (code) {
+            case ALBUM_TABLE_CODE:
+                cursor = mMusicDao.getAlbumsCursor();
+                break;
+            case ALBUM_ROW_CODE:
+                cursor = mMusicDao.getAlbumWithIdCursor((int) ContentUris.parseId(uri));
+                break;
+            case SONG_TABLE_CODE:
+                cursor = mMusicDao.getSongsCursor();
+                break;
+            case SONG_ROW_CODE:
+                cursor = mMusicDao.getSongWithIdCursor((int) ContentUris.parseId(uri));
+                break;
+            case ALBUMSONG_TABLE_CODE:
+                cursor = mMusicDao.getAlbumSongCursor();
+                break;
+            case ALBUMSONG_ROW_CODE:
+                cursor = mMusicDao.getAlbumSongWithIdCursor((int) ContentUris.parseId(uri));
+                break;
+            default:
+                cursor = null;
+                break;
         }
         return cursor;
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        // TODO: Implement this to handle requests to insert a new row.
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -115,7 +139,40 @@ public class MusicProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        int code = URI_MATCHER.match(uri);
+        if (code != ALBUM_ROW_CODE && code != ALBUM_TABLE_CODE
+                && code != SONG_ROW_CODE && code != SONG_TABLE_CODE
+                && code != ALBUMSONG_ROW_CODE && code != ALBUMSONG_TABLE_CODE) return 0;
+        int id = (int) ContentUris.parseId(uri);
+        int deleted = 0;
+        List<AlbumSong> albumSongs;
+        switch (code) {
+            case ALBUM_ROW_CODE:
+                Album album = mMusicDao.getAlbumsById(id);
+                albumSongs = mMusicDao.getAlbumsFromAlbumSong(id);
+                for (AlbumSong as: albumSongs){
+                    mMusicDao.deleteAlbumSong(as);
+                    deleted++;
+                }
+                mMusicDao.deleteAlbum(album);
+                deleted++;
+                break;
+            case SONG_ROW_CODE:
+                Song song = mMusicDao.getSongById(id);
+                albumSongs = mMusicDao.getSongsFromAlbumSong(id);
+                for (AlbumSong as: albumSongs){
+                    mMusicDao.deleteAlbumSong(as);
+                    deleted++;
+                }
+                mMusicDao.deleteSong(song);
+                deleted++;
+                break;
+            case ALBUMSONG_ROW_CODE:
+                AlbumSong albumSong = mMusicDao.getAlbumSongById(id);
+                mMusicDao.deleteAlbumSong(albumSong);
+                deleted++;
+                break;
+        }
+        return deleted;
     }
 }
