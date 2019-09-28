@@ -18,11 +18,14 @@ public interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAlbums(List<Album> albums);
 
+    @Insert
+    void insertAlbum(Album album);
+
     @Query("select * from album")
     List<Album> getAlbums();
 
     @Query("select * from album where id = :albumId")
-    Album getAlbumsById(int albumId);
+    Album getAlbumById(int albumId);
 
     @Update()
     void updateAlbum(Album album);
@@ -34,6 +37,9 @@ public interface MusicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSongs(List<Song> songs);
+
+    @Insert
+    void insertSong(Song song);
 
     @Query("select * from song")
     List<Song> getSongs();
@@ -55,6 +61,9 @@ public interface MusicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void setLinksAlbumSongs(List<AlbumSong> linksAlbumSongs);
+
+    @Insert
+    void insertAlbumSong(AlbumSong albumSong);
 
     @Query("select * from albumsong")
     List<AlbumSong> getAlbumSong();
