@@ -160,7 +160,7 @@ public class MusicProvider extends ContentProvider {
                 int album_id = values.getAsInteger(KEY_DATA_2);
                 int song_id = values.getAsInteger(KEY_DATA_3);
                 if (mMusicDao.getAlbumSongById(_ID) == null
-                        && AlbumAndSongIsNotNull(album_id, song_id)) {
+                        && albumAndSongIsNotNull(album_id, song_id)) {
                     mMusicDao.insertAlbumSong(new AlbumSong(_ID, album_id, song_id));
                 } else {
                     uri = Uri.parse("");
@@ -170,7 +170,7 @@ public class MusicProvider extends ContentProvider {
         return uri;
     }
 
-    private boolean AlbumAndSongIsNotNull(int album_id, int song_id) {
+    private boolean albumAndSongIsNotNull(int album_id, int song_id) {
         boolean result = false;
         if (mMusicDao.getAlbumById(album_id) != null
                 && mMusicDao.getSongById(song_id) != null)
@@ -181,8 +181,50 @@ public class MusicProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        int updated = -1;
+        int code = URI_MATCHER.match(uri);
+        if (code != ALBUM_ROW_CODE && code != ALBUM_TABLE_CODE
+                && code != SONG_ROW_CODE && code != SONG_TABLE_CODE
+                && code != ALBUMSONG_ROW_CODE && code != ALBUMSONG_TABLE_CODE) return 0;
+        int _ID = (int) ContentUris.parseId(uri);
+        String name;
+        switch (code) {
+            case ALBUM_ROW_CODE:
+                if (mMusicDao.getAlbumById(_ID) != null) {
+                    name = values.getAsString(KEY_DATA_2);
+                    String release = values.getAsString(KEY_DATA_3);
+                    mMusicDao.updateAlbum(new Album(_ID, name, release));
+                    updated++;
+                }
+                break;
+            case SONG_ROW_CODE:
+                if (mMusicDao.getSongById(_ID) != null) {
+                    name = values.getAsString(KEY_DATA_2);
+                    String duration = values.getAsString(KEY_DATA_3);
+                    mMusicDao.updateSong(new Song(_ID, name, duration));
+                    updated++;
+                }
+                break;
+            case ALBUMSONG_ROW_CODE:
+                if (values.getAsString(KEY_DATA_2) != null && values.getAsString(KEY_DATA_3) != null) {
+                    int album_id = values.getAsInteger(KEY_DATA_2);
+                    int song_id = values.getAsInteger(KEY_DATA_3);
+                    if (mMusicDao.getAlbumSongById(_ID) != null
+                            && albumAndSongIsNotNull(album_id, song_id)) {
+                        mMusicDao.updateAlbumSong(new AlbumSong(_ID, album_id, song_id));
+                        updated++;
+                    }
+                } else {
+                    if (mMusicDao.getAlbumSongById(_ID) != null) {
+                        AlbumSong albumSong = new AlbumSong();
+                        albumSong.setId(_ID);
+                        mMusicDao.deleteAlbumSong(albumSong);
+                        updated++;
+                    }
+                }
+                break;
+        }
+        return updated;
     }
 
     @Override
@@ -192,7 +234,7 @@ public class MusicProvider extends ContentProvider {
                 && code != SONG_ROW_CODE && code != SONG_TABLE_CODE
                 && code != ALBUMSONG_ROW_CODE && code != ALBUMSONG_TABLE_CODE) return 0;
         int id = (int) ContentUris.parseId(uri);
-        int deleted = 0;
+        int deleted = -1;
         List<AlbumSong> albumSongs;
         switch (code) {
             case ALBUM_ROW_CODE:
@@ -205,8 +247,6 @@ public class MusicProvider extends ContentProvider {
                     }
                     mMusicDao.deleteAlbum(album);
                     deleted++;
-                } else {
-                    deleted = -1;
                 }
                 break;
             case SONG_ROW_CODE:
@@ -219,8 +259,6 @@ public class MusicProvider extends ContentProvider {
                     }
                     mMusicDao.deleteSong(song);
                     deleted++;
-                } else {
-                    deleted = -1;
                 }
                 break;
             case ALBUMSONG_ROW_CODE:
@@ -228,8 +266,6 @@ public class MusicProvider extends ContentProvider {
                 if (albumSong != null) {
                     mMusicDao.deleteAlbumSong(albumSong);
                     deleted++;
-                } else {
-                    deleted = -1;
                 }
                 break;
         }
