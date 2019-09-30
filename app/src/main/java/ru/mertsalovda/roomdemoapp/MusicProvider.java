@@ -126,7 +126,7 @@ public class MusicProvider extends ContentProvider {
         return cursor;
     }
 
-    @Override
+    @Override // Возвращаю uri="", если запись с ID уже существует и вставка не была выполнена.
     public Uri insert(Uri uri, ContentValues values) {
         int code = URI_MATCHER.match(uri);
         if (code != ALBUM_ROW_CODE && code != ALBUM_TABLE_CODE
@@ -136,11 +136,11 @@ public class MusicProvider extends ContentProvider {
         String name;
         switch (code) {
             case ALBUM_TABLE_CODE:
-                _ID = values.getAsInteger(KEY_DATA_ID);
-                if (mMusicDao.getAlbumById(_ID) == null) {
+                _ID = values.getAsInteger(KEY_DATA_ID); // Достаю ID
+                if (mMusicDao.getAlbumById(_ID) == null) { // Проверка отсутсвия записи по ID
                     name = values.getAsString(KEY_DATA_2);
-                    String reales = values.getAsString(KEY_DATA_3);
-                    mMusicDao.insertAlbum(new Album(_ID, name, reales));
+                    String release = values.getAsString(KEY_DATA_3);
+                    mMusicDao.insertAlbum(new Album(_ID, name, release)); // вставка
                 } else {
                     uri = Uri.parse("");
                 }
@@ -156,12 +156,10 @@ public class MusicProvider extends ContentProvider {
                 }
                 break;
             case ALBUMSONG_TABLE_CODE:
-                _ID = values.getAsInteger(KEY_DATA_ID);
                 int album_id = values.getAsInteger(KEY_DATA_2);
                 int song_id = values.getAsInteger(KEY_DATA_3);
-                if (mMusicDao.getAlbumSongById(_ID) == null
-                        && albumAndSongIsNotNull(album_id, song_id)) {
-                    mMusicDao.insertAlbumSong(new AlbumSong(_ID, album_id, song_id));
+                if (albumAndSongIsNotNull(album_id, song_id)) { // Не вставляю запись, если нет соответствиющих Album и Song (связывать нечего)
+                    mMusicDao.insertAlbumSong(new AlbumSong(album_id, song_id));
                 } else {
                     uri = Uri.parse("");
                 }
@@ -178,7 +176,7 @@ public class MusicProvider extends ContentProvider {
         return result;
     }
 
-    @Override
+    @Override   // Если запись не обновлена возращаю -1. Люлое положительное число означает успех или 0.
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         int updated = -1;
@@ -190,10 +188,10 @@ public class MusicProvider extends ContentProvider {
         String name;
         switch (code) {
             case ALBUM_ROW_CODE:
-                if (mMusicDao.getAlbumById(_ID) != null) {
+                if (mMusicDao.getAlbumById(_ID) != null) { // Запись должна существовать
                     name = values.getAsString(KEY_DATA_2);
                     String release = values.getAsString(KEY_DATA_3);
-                    mMusicDao.updateAlbum(new Album(_ID, name, release));
+                    mMusicDao.updateAlbum(new Album(_ID, name, release)); // Обновление
                     updated++;
                 }
                 break;
@@ -214,7 +212,7 @@ public class MusicProvider extends ContentProvider {
                         mMusicDao.updateAlbumSong(new AlbumSong(_ID, album_id, song_id));
                         updated++;
                     }
-                } else {
+                } else { // Если KEY_DATA_2 и KEY_DATA_3 == null удаляю запись с ID (связь записей больше не существует)
                     if (mMusicDao.getAlbumSongById(_ID) != null) {
                         AlbumSong albumSong = new AlbumSong();
                         albumSong.setId(_ID);
@@ -227,7 +225,7 @@ public class MusicProvider extends ContentProvider {
         return updated;
     }
 
-    @Override
+    @Override //Если запись не удалена возращаю -1. Возвращаю колличество удалённых записей
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int code = URI_MATCHER.match(uri);
         if (code != ALBUM_ROW_CODE && code != ALBUM_TABLE_CODE
@@ -240,7 +238,8 @@ public class MusicProvider extends ContentProvider {
             case ALBUM_ROW_CODE:
                 Album album = mMusicDao.getAlbumById(id);
                 if (album != null) {
-                    albumSongs = mMusicDao.getAlbumsFromAlbumSong(id);
+                    deleted =0;
+                    albumSongs = mMusicDao.getAlbumsFromAlbumSong(id); // нахожу все связанные записи в AlbumSong и даляю их иначе ошибка
                     for (AlbumSong as : albumSongs) {
                         mMusicDao.deleteAlbumSong(as);
                         deleted++;
@@ -252,6 +251,7 @@ public class MusicProvider extends ContentProvider {
             case SONG_ROW_CODE:
                 Song song = mMusicDao.getSongById(id);
                 if (song != null) {
+                    deleted =0;
                     albumSongs = mMusicDao.getSongsFromAlbumSong(id);
                     for (AlbumSong as : albumSongs) {
                         mMusicDao.deleteAlbumSong(as);
@@ -264,6 +264,7 @@ public class MusicProvider extends ContentProvider {
             case ALBUMSONG_ROW_CODE:
                 AlbumSong albumSong = mMusicDao.getAlbumSongById(id);
                 if (albumSong != null) {
+                    deleted =0;
                     mMusicDao.deleteAlbumSong(albumSong);
                     deleted++;
                 }

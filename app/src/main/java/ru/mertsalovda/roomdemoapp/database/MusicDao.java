@@ -100,7 +100,7 @@ public interface MusicDao {
 
     @Query("select * from song where id = :songId")
     Cursor getSongWithIdCursor(int songId);
-
+    // Объединяю 3 таблицы в одну
     @Query("select * from albumsong inner join song, album on song.id " +
             "= albumsong.song_id and album.id = albumsong.album_id where albumsong.id = :albumSongId")
     Cursor getAlbumSongWithIdCursor(int albumSongId);

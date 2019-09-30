@@ -39,35 +39,31 @@ public class MainActivity extends AppCompatActivity {
         btnGet = findViewById(R.id.get);
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<Album> albums = createAlbums();
-                List<Song> songs = createSongs();
-                List<AlbumSong> albumSongList = createAlbumSong(albums, songs);
-                musicDao.insertAlbums(albums);
-                musicDao.insertSongs(songs);
-                musicDao.setLinksAlbumSongs(albumSongList);
-            }
+        btnAdd.setOnClickListener(v -> {
+            List<Album> albums = createAlbums();
+            List<Song> songs = createSongs();
+            List<AlbumSong> albumSongList = createAlbumSong(albums, songs);
+            musicDao.insertAlbums(albums);
+            musicDao.insertSongs(songs);
+            List<AlbumSong> albumSongs = musicDao.getAlbumSong();
+            for (AlbumSong albumSong : albumSongs)
+                musicDao.deleteAlbumSong(albumSong);
+            musicDao.setLinksAlbumSongs(albumSongList);
         });
 
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToast(musicDao.getAlbums(), musicDao.getSongs(), musicDao.getAlbumSong());
-            }
-        });
+        btnGet.setOnClickListener(v -> showToast(musicDao.getAlbums(), musicDao.getSongs(), musicDao.getAlbumSong()));
 
     }
 
     private List<AlbumSong> createAlbumSong(List<Album> albums, List<Song> songs) {
+
         List<AlbumSong> albumSongList = new ArrayList<>();
         int album_id = 0;
         // Распределение по две песни в альбом
         for (int id = 0; id < songs.size(); id++) {
             if (id % 2 == 0 && id != 0)
                 album_id++;
-            albumSongList.add(new AlbumSong(id+1, albums.get(album_id).getId(), songs.get(id).getId()));
+            albumSongList.add(new AlbumSong(albums.get(album_id).getId(), songs.get(id).getId()));
         }
         return albumSongList;
     }

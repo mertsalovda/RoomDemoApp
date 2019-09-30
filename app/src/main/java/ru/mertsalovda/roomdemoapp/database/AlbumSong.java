@@ -23,6 +23,11 @@ public class AlbumSong {
     public AlbumSong() {
     }
 
+    public AlbumSong(int albumId, int songId) {
+        this.albumId = albumId;
+        this.songId = songId;
+    }
+
     public AlbumSong(int id, int albumId, int songId) {
         this.id = id;
         this.albumId = albumId;
